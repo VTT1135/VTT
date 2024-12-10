@@ -1,0 +1,255 @@
+<style>
+    :root {
+        --primary-color: #937245;
+        --accent-color: #937245;
+        --hover-color: #7c5f39;
+        --text-color: #937245;
+        --light-bg: #f8f9fa;
+        --transition: all 0.3s ease;
+    }
+
+    .cart-container {
+        padding: 2rem 0;
+        min-height: 60vh;
+    }
+
+    .cart-title {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 2rem;
+        position: relative;
+        display: inline-block;
+    }
+
+    .cart-title::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 60%;
+        height: 2px;
+        background: var(--accent-color);
+    }
+
+    .cart-table {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .cart-table th {
+        background: var(--light-bg);
+        color: var(--text-color);
+        font-weight: 600;
+        padding: 1rem;
+    }
+
+    .product-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .product-name {
+        color: #333;
+        font-weight: 500;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .product-name:hover {
+        color: var(--primary-color);
+    }
+
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .quantity-btn {
+        background: var(--light-bg);
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        color: var(--text-color);
+        transition: var(--transition);
+    }
+
+    .quantity-btn:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .quantity-input {
+        width: 50px;
+        text-align: center;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 0.3rem;
+    }
+
+    .remove-btn {
+        background: none;
+        border: none;
+        color: #dc3545;
+        transition: var(--transition);
+    }
+
+    .remove-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .cart-summary {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .summary-title {
+        color: var(--text-color);
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .checkout-btn {
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        color: white;
+        border: none;
+        padding: 1rem;
+        border-radius: 25px;
+        width: 100%;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .checkout-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(147, 114, 69, 0.3);
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 3rem;
+    }
+
+    .empty-cart .material-symbols-outlined {
+        font-size: 4rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .continue-shopping {
+        color: var(--primary-color);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+    }
+
+    .continue-shopping:hover {
+        transform: translateX(-5px);
+    }
+</style>
+
+<body ng-controller="CartController">
+
+<div class="container cart-container">
+    <h1 class="cart-title">Giỏ hàng của bạn</h1>
+
+    <!-- Empty Cart State -->
+    <div class="empty-cart" ng-if="cartItems.length === 0">
+        <span class="material-symbols-outlined" translate="no">shopping_cart</span>
+        <h3>Giỏ hàng trống</h3>
+        <p>Hãy thêm sản phẩm vào giỏ hàng của bạn</p>
+        <a href="#!/shop" class="continue-shopping">
+            <span class="material-symbols-outlined" translate="no">arrow_back</span>
+            Tiếp tục mua sắm
+        </a>
+    </div>
+
+    <!-- Cart Items -->
+    <div class="row" ng-if="cartItems.length > 0">
+        <div class="col-lg-8">
+            <div class="cart-table">
+                <table class="table table-borderless mb-0">
+                    <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" ng-model="selectAll" ng-click="toggleSelectAll()">
+                        </th>
+                        <th>Sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Tổng</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in cartItems">
+                        <td>
+                            <input type="checkbox" ng-model="item.selected" ng-change="updateSelection()">
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img ng-src="/imageUrl/{{item.imageUrl}}" alt="{{item.productName}}" class="product-img">
+                                <a ng-href="#!/product-details/{{item.productId}}" class="product-name">{{item.productName}}</a>
+                            </div>
+                        </td>
+                        <td>{{item.price | number}}đ</td>
+                        <td>
+                            <div class="quantity-control">
+                                <button class="quantity-btn" ng-click="updateCart(item.id, item.quantity - 1)" ng-disabled="item.quantity <= 1">-</button>
+                                <input type="number" class="quantity-input" ng-model="item.quantity" ng-change="updateCart(item.id, item.quantity)" ng-disabled="item.quantity <= 1">
+                                <button class="quantity-btn" ng-click="updateCart(item.id, item.quantity + 1)">+</button>
+                            </div>
+                        </td>
+                        <td>{{item.quantity * item.price | number}}đ</td>
+                        <td>
+                            <button class="remove-btn" ng-click="removeFromCart(item.id)">
+                                <span class="material-symbols-outlined" translate="no">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Cart Summary -->
+        <div class="col-lg-4">
+            <div class="cart-summary">
+                <h3 class="summary-title">Tổng giỏ hàng</h3>
+                <div class="summary-item">
+                    <span>Tạm tính:</span>
+                    <span>{{getTotal() | number}}đ</span>
+                </div>
+                <div class="summary-item">
+                    <span>Phí vận chuyển:</span>
+                    <span>Miễn phí</span>
+                </div>
+                <div class="summary-item">
+                    <strong>Tổng cộng:</strong>
+                    <strong>{{getTotal() | number}}đ</strong>
+                </div>
+                <a href="#!/order" class="checkout-btn btn" ng-disabled="!selectedCartItems.length"
+                   ng-class="{'disabled': !selectedCartItems.length}">
+                    Tiến hành thanh toán
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

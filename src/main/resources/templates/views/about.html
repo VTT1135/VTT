@@ -1,0 +1,128 @@
+
+    <style>
+        :root {
+            --primary-color: #937245;
+            --accent-color: #c9a980;
+            --hover-color: #7c5f39;
+            --text-color: #937245;
+            --light-bg: #f8f9fa;
+            --transition: all 0.3s ease;
+        }
+
+        .about-header {
+            background: linear-gradient(135deg, #937245, #c9a980);
+            padding: 4rem 0;
+            color: white;
+            text-align: center;
+        }
+
+        .section-title {
+            color: var(--text-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .about-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .about-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-image {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .about-text {
+            padding-top: 1rem;
+        }
+
+        .btn-contact {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-contact:hover {
+            background: var(--hover-color);
+        }
+    </style>
+
+<div class="about-header">
+    <div class="container">
+        <h1 class="display-4">Chào mừng đến với MiniStore</h1>
+        <p class="lead">Nơi tôn vinh giá trị thời gian với những chiếc đồng hồ đẳng cấp.</p>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="about-card">
+                <div class="about-image">
+                    <img src="https://via.placeholder.com/500x300" alt="Về chúng tôi">
+                </div>
+                <div class="about-text">
+                    <h4 class="section-title">Về chúng tôi</h4>
+                    <p>MiniStore tự hào là địa chỉ uy tín chuyên cung cấp các dòng đồng hồ sang trọng, đẳng cấp từ những thương hiệu nổi tiếng trên thế giới. Với đội ngũ nhân viên tận tâm và sản phẩm chất lượng, chúng tôi cam kết mang đến trải nghiệm tuyệt vời nhất cho khách hàng.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="about-card">
+                <div class="about-image">
+                    <img src="https://via.placeholder.com/500x300" alt="Sứ mệnh của chúng tôi">
+                </div>
+                <div class="about-text">
+                    <h4 class="section-title">Sứ mệnh của chúng tôi</h4>
+                    <p>Sứ mệnh của chúng tôi là đem lại sự tinh tế và sự hoàn hảo trong từng khoảnh khắc. Chúng tôi tin rằng một chiếc đồng hồ không chỉ là công cụ để xem giờ, mà còn là một tác phẩm nghệ thuật, một phần của phong cách sống và cá tính riêng.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="about-card">
+                <div class="about-image">
+                    <img src="https://via.placeholder.com/500x300" alt="Sản phẩm của chúng tôi">
+                </div>
+                <div class="about-text">
+                    <h4 class="section-title">Sản phẩm của chúng tôi</h4>
+                    <p>Tại MiniStore, bạn có thể tìm thấy đa dạng các dòng đồng hồ phù hợp với mọi phong cách: từ cổ điển, sang trọng đến hiện đại và tối giản. Tất cả sản phẩm đều được tuyển chọn kỹ lưỡng để đảm bảo chất lượng tốt nhất.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="about-card">
+                <div class="about-image">
+                    <img src="https://via.placeholder.com/500x300" alt="Liên hệ">
+                </div>
+                <div class="about-text">
+                    <h4 class="section-title">Liên hệ với chúng tôi</h4>
+                    <p>Hãy để chúng tôi đồng hành cùng bạn trên hành trình khám phá thời gian và phong cách sống. Liên hệ với MiniStore qua email hoặc ghé thăm cửa hàng để nhận được sự tư vấn tận tình.</p>
+                    <a href="mailto:taivtps34187@fpt.edu.vn" class="btn-contact">Liên hệ ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

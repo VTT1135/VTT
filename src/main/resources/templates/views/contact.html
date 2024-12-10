@@ -1,0 +1,128 @@
+
+  <style>
+    :root {
+      --primary-color: #937245;
+      --accent-color: #c9a980;
+      --hover-color: #7c5f39;
+      --text-color: #333;
+      --light-bg: #f9f9f9;
+      --transition: all 0.3s ease;
+    }
+
+    .contact-header {
+      background: linear-gradient(135deg, #937245, #c9a980);
+      color: white;
+      text-align: center;
+      padding: 4rem 0;
+    }
+
+    .contact-header h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+
+    .contact-header p {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+    }
+
+    .contact-card {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+    }
+
+    .contact-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-submit {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      transition: var(--transition);
+    }
+
+    .btn-submit:hover {
+      background: var(--hover-color);
+    }
+
+    .contact-info {
+      color: var(--text-color);
+    }
+
+    .contact-info i {
+      color: var(--primary-color);
+      margin-right: 10px;
+    }
+  </style>
+
+<div class="contact-header">
+  <div class="container">
+    <h1>Liên hệ với MiniStore</h1>
+    <p>Hãy để chúng tôi giúp bạn giải đáp mọi thắc mắc và mang đến những trải nghiệm tuyệt vời.</p>
+  </div>
+</div>
+
+<div class="container my-5">
+  <div class="row g-4">
+    <!-- Form liên hệ -->
+    <div class="col-lg-6">
+      <div class="contact-card">
+        <h4 class="mb-4">Gửi tin nhắn cho chúng tôi</h4>
+        <form>
+          <div class="mb-3">
+            <label for="name" class="form-label">Họ và tên</label>
+            <input type="text" class="form-control" id="name" placeholder="Nhập họ và tên của bạn" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Nhập email của bạn" required>
+          </div>
+          <div class="mb-3">
+            <label for="subject" class="form-label">Chủ đề</label>
+            <input type="text" class="form-control" id="subject" placeholder="Nhập chủ đề liên hệ">
+          </div>
+          <div class="mb-3">
+            <label for="message" class="form-label">Nội dung</label>
+            <textarea class="form-control" id="message" rows="5" placeholder="Nhập nội dung tin nhắn của bạn" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-submit">Gửi tin nhắn</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Thông tin liên hệ -->
+    <div class="col-lg-6">
+      <div class="contact-card">
+        <h4 class="mb-4">Thông tin liên hệ</h4>
+        <p class="contact-info">
+          <i class="bi bi-geo-alt"></i>
+          Địa chỉ: 656/100 Quang Trung, Gò Vấp, TP. HCM
+        </p>
+        <p class="contact-info">
+          <i class="bi bi-envelope"></i>
+          Email: <a href="mailto:taivtps34187@fpt.edu.vn">taivtps34187@fpt.edu.vn</a>
+        </p>
+        <p class="contact-info">
+          <i class="bi bi-telephone"></i>
+          Điện thoại: <a href="tel:0366019289">0366019289</a>
+        </p>
+        <p class="contact-info">
+          <i class="bi bi-clock"></i>
+          Giờ làm việc: Thứ 2 - Thứ 7, 8:00 - 18:00
+        </p>
+        <h5 class="mt-4">Kết nối với chúng tôi</h5>
+        <a href="#" class="me-3"><i class="bi bi-facebook" style="font-size: 1.5rem; color: var(--primary-color);"></i></a>
+        <a href="#"><i class="bi bi-instagram" style="font-size: 1.5rem; color: var(--primary-color);"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+

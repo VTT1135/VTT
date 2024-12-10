@@ -1,0 +1,168 @@
+<style>
+
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .revenue-display {
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+    box-shadow: 0 4px 15px rgba(67, 24, 255, 0.15);
+  }
+
+  .revenue-display h4 {
+    color: white;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  input[type="number"] {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+
+  input[type="number"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1);
+    outline: none;
+  }
+
+  /* Ẩn mũi tên tăng giảm mặc định của input number */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .date-range-container input[type="date"] {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+
+  .date-range-container input[type="date"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1);
+    outline: none;
+  }
+</style>
+
+<body ng-controller="AdminStatisticsController">
+
+<div class="container-fluid">
+  <!-- Page Header -->
+  <div class="dashboard-card mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="m-0">
+        <span class="material-symbols-rounded me-2" translate="no">analytics</span>
+        Thống kê
+      </h3>
+    </div>
+  </div>
+
+  <div class="date-range-container">
+    <div class="d-flex gap-2">
+      <input type="date" class="form-control" ng-model="startDate">
+      <input type="date" class="form-control" ng-model="endDate">
+      <button class="btn btn-primary" ng-click="getRevenueByDateRange()">Xem doanh thu</button>
+    </div>
+
+    <div class="revenue-display" ng-if="dateRangeRevenue !== null">
+      <h4>Doanh thu từ {{startDate | date:'dd/MM/yyyy'}} đến {{endDate | date:'dd/MM/yyyy'}}: {{dateRangeRevenue | currency:"":0}} VND</h4>
+    </div>
+  </div>
+
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="dashboard-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="m-0">
+            <span class="material-symbols-rounded me-2" translate="no">trending_up</span>
+            Top sản phẩm bán chạy
+          </h4>
+          <div class="d-flex align-items-center gap-2">
+            <input type="number"
+                   class="form-control"
+                   ng-model="topLimit"
+                   min="1"
+                   placeholder="Nhập số sản phẩm"
+                   style="width: 200px;"
+                   required>
+            <button class="btn btn-primary"
+                    ng-click="loadTopProducts()"
+                    ng-disabled="!topLimit">Xem</button>
+          </div>
+        </div>
+        <div class="table-responsive" ng-if="topProducts.length > 0">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>STT</th>
+              <th>Tên sản phẩm</th>
+              <th>Số lượng đã bán</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="product in topProducts">
+              <td>{{$index + 1}}</td>
+              <td>{{product.productName}}</td>
+              <td>{{product.totalQuantitySold}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="text-center p-3" ng-if="!topLimit">
+          <p class="text-muted">Vui lòng nhập số lượng sản phẩm muốn xem</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-4">
+      <div class="dashboard-card h-100">
+        <canvas id="revenueChart"></canvas>
+        <h4 class="text-center mt-3">Doanh thu</h4>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+      <div class="dashboard-card h-100">
+        <canvas id="orderChart"></canvas>
+        <h4 class="text-center mt-3">Số lượng đơn hàng</h4>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+      <div class="dashboard-card h-100">
+        <canvas id="productSoldChart"></canvas>
+        <h4 class="text-center mt-3">Số lượng sản phẩm đã bán</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading-overlay" ng-if="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Đang tải dữ liệu...</span>
+    </div>
+  </div>
+</div>

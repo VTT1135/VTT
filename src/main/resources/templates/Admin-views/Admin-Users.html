@@ -1,0 +1,78 @@
+<style>
+    .modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+</style>
+
+<body ng-controller="AdminUsersController" class="container mt-5">
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="dashboard-card mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="m-0">
+                <span class="material-symbols-rounded me-2" translate="no">group</span>
+                Quản lý người dùng
+            </h3>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="dashboard-card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Roles</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="user in users">
+                    <td>{{user.id}}</td>
+                    <td><strong>{{user.username}}</strong></td>
+                    <td>{{user.email}}</td>
+                    <td>{{ getRoleNames(user) }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info me-1" ng-click="openEditRoleModal(user)">
+                            <span class="material-symbols-rounded" translate="no">edit</span>
+                        </button>
+                        <button class="btn btn-sm btn-danger" ng-click="deleteUser(user.id)">
+                            <span class="material-symbols-rounded" translate="no">delete</span>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal cập nhật vai trò người dùng -->
+<div class="modal fade" id="roleModal" tabindex="-1" aria-labelledby="roleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cập nhật vai trò</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="roleForm">
+                    <input type="hidden" ng-model="selectedUser.id">
+                    <div class="mb-3">
+                        <label for="roles" class="form-label">Select Roles:</label>
+                        <select id="roles" class="form-select" multiple ng-model="selectedUser.roles" ng-options="role for role in availableRoles"></select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" ng-click="saveRoles()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

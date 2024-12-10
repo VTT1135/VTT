@@ -1,0 +1,125 @@
+
+  <style>
+    :root {
+      --primary-color: #937245;
+      --accent-color: #c9a980;
+      --hover-color: #7c5f39;
+      --text-color: #333;
+      --light-bg: #f9f9f9;
+      --transition: all 0.3s ease;
+    }
+
+    .news-header {
+      background: linear-gradient(135deg, #937245, #c9a980);
+      color: white;
+      text-align: center;
+      padding: 4rem 0;
+    }
+
+    .news-header h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+
+    .news-header p {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+    }
+
+    .news-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+    }
+
+    .news-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .news-card img {
+      border-radius: 10px;
+    }
+
+    .news-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-top: 1rem;
+    }
+
+    .news-date {
+      color: gray;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn-read-more {
+      color: var(--primary-color);
+      font-weight: bold;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .btn-read-more:hover {
+      color: var(--hover-color);
+    }
+  </style>
+
+
+<!-- Header -->
+<div class="news-header">
+  <div class="container">
+    <h1>Tin tức mới nhất</h1>
+    <p>Khám phá thế giới đồng hồ và các thông tin hấp dẫn từ MiniStore.</p>
+  </div>
+</div>
+
+<!-- Tin tức -->
+<div class="container my-5">
+  <div class="row g-4">
+    <!-- Bài viết 1 -->
+    <div class="col-lg-4">
+      <div class="news-card">
+        <img src="https://via.placeholder.com/350x200" alt="Tin tức 1" class="img-fluid">
+        <h3 class="news-title">BST Đồng hồ mới nhất 2024</h3>
+        <p class="news-date">Ngày đăng: 10/12/2024</p>
+        <p>MiniStore vừa giới thiệu BST đồng hồ đỉnh cao với thiết kế hiện đại, sang trọng phù hợp cho mọi dịp.</p>
+        <a href="#" class="btn-read-more">Xem thêm &rarr;</a>
+      </div>
+    </div>
+    <!-- Bài viết 2 -->
+    <div class="col-lg-4">
+      <div class="news-card">
+        <img src="https://via.placeholder.com/350x200" alt="Tin tức 2" class="img-fluid">
+        <h3 class="news-title">Bí quyết bảo quản đồng hồ</h3>
+        <p class="news-date">Ngày đăng: 05/12/2024</p>
+        <p>Hướng dẫn chi tiết cách bảo quản đồng hồ bền lâu, giữ gìn vẻ đẹp và độ chính xác theo thời gian.</p>
+        <a href="#" class="btn-read-more">Xem thêm &rarr;</a>
+      </div>
+    </div>
+    <!-- Bài viết 3 -->
+    <div class="col-lg-4">
+      <div class="news-card">
+        <img src="https://via.placeholder.com/350x200" alt="Tin tức 3" class="img-fluid">
+        <h3 class="news-title">Top 5 đồng hồ bán chạy nhất</h3>
+        <p class="news-date">Ngày đăng: 01/12/2024</p>
+        <p>Khám phá những mẫu đồng hồ được khách hàng yêu thích và lựa chọn nhiều nhất tại MiniStore.</p>
+        <a href="#" class="btn-read-more">Xem thêm &rarr;</a>
+      </div>
+    </div>
+  </div>
+  <!-- Phân trang -->
+  <nav aria-label="Pagination" class="mt-5">
+    <ul class="pagination justify-content-center">
+      <li class="page-item"><a class="page-link" href="#">Trước</a></li>
+      <li class="page-item active"><a class="page-link" href="#">1</a></li>
+      <li class="page-item"><a class="page-link" href="#">2</a></li>
+      <li class="page-item"><a class="page-link" href="#">3</a></li>
+      <li class="page-item"><a class="page-link" href="#">Kế tiếp</a></li>
+    </ul>
+  </nav>
+</div>
+

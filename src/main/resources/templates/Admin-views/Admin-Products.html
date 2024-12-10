@@ -1,0 +1,222 @@
+<style>
+    /* Thêm CSS cho hình ảnh đồng nhất */
+    .product-image {
+        width: 100px; /* Kích thước đồng nhất cho hình ảnh sản phẩm */
+        height: 100px; /* Kích thước đồng nhất cho hình ảnh sản phẩm */
+        object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
+    }
+
+    .modal-body img {
+        width: 100%; /* Hình ảnh trong modal chiếm toàn bộ chiều rộng */
+        height: auto; /* Chiều cao tự động để giữ tỷ lệ */
+    }
+</style>
+
+<body ng-controller="AdminProductsController" class="container mt-5">
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="dashboard-card mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="m-0">
+                <span class="material-symbols-rounded me-2" translate="no">inventory_2</span>
+                Quản lý sản phẩm
+            </h3>
+        </div>
+    </div>
+
+    <!-- Add/Edit Product Form -->
+    <div class="dashboard-card mb-4">
+        <h4 class="mb-3">Thêm/Sửa sản phẩm</h4>
+        <form ng-submit="saveProduct()" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Tên sản phẩm</label>
+                <textarea class="form-control" ng-model="product.name" rows="3"></textarea>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Mô tả</label>
+                <textarea class="form-control" ng-model="product.description" rows="3"></textarea>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Giá</label>
+                <input type="number" class="form-control" ng-model="product.price" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Danh mục</label>
+                <select class="form-select" ng-model="product.categoryId" required>
+                    <option value="" disabled>Chọn danh mục</option>
+                    <option ng-repeat="category in categories" ng-value="category.id">{{category.name}}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Thương hiệu</label>
+                <select class="form-select" ng-model="product.brandId" required>
+                    <option value="" disabled>Chọn thương hiệu</option>
+                    <option ng-repeat="brand in brands" ng-value="brand.id">{{brand.name}}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Hình ảnh</label>
+                <!-- Input chọn file -->
+                <input type="file" id="productImages" multiple onchange="angular.element(this).scope().previewImages()" />
+
+                <!-- Hiển thị danh sách hình ảnh đã chọn -->
+                <div ng-if="product.images && product.images.length > 0" class="mt-2">
+                    <h5>Hình ảnh đã chọn:</h5>
+                    <div ng-repeat="image in product.images" class="d-flex align-items-center">
+                        <!-- Kiểm tra và hiển thị ảnh dựa trên loại dữ liệu -->
+                        <img ng-src="{{image.imageUrl ? '/imageUrl/' + image.imageUrl : image}}"
+                             alt="Product Image"
+                             style="width: 50px; height: 50px; object-fit: cover;"
+                             class="me-2">
+                        <button type="button" class="btn btn-danger btn-sm" ng-click="removeImage(image)">
+                            <span class="material-symbols-rounded">delete</span> Xóa
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-12 mt-4">
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-primary" ng-click="addProduct()">
+                        <span class="material-symbols-rounded" translate="no">add</span> Thêm
+                    </button>
+                    <button type="button" class="btn btn-warning" ng-click="updateProduct()" ng-disabled="!isEdit">
+                        <span class="material-symbols-rounded" translate="no">edit</span> Cập nhật
+                    </button>
+                    <button type="button" class="btn btn-secondary" ng-click="resetForm()">
+                        <span class="material-symbols-rounded" translate="no">refresh</span> Làm mới
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Search Form -->
+    <div class="dashboard-card mb-4">
+        <h4 class="mb-3">Tìm kiếm sản phẩm</h4>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <input type="text" class="form-control" ng-model="searchName" placeholder="Tìm theo tên">
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" ng-model="searchCategoryId">
+                    <option value="">Tất cả danh mục</option>
+                    <option ng-repeat="category in categories" ng-value="category.id">{{category.name}}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" ng-model="searchBrandId">
+                    <option value="">Tất cả thương hiệu</option>
+                    <option ng-repeat="brand in brands" ng-value="brand.id">{{brand.name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Table -->
+    <div class="dashboard-card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Mô tả</th>
+                    <th>Giá</th>
+                    <th>Danh mục</th>
+                    <th>Thương hiệu</th>
+                    <th>Hình ảnh</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="product in paginatedProducts()">
+                    <td>{{product.id}}</td>
+                    <td><strong>{{product.name}}</strong></td>
+                    <td>{{product.description}}</td>
+                    <td>{{product.price | currency:"₫":0}}</td>
+                    <td><span class="badge bg-primary">{{product.category.name}}</span></td>
+                    <td><span class="badge bg-info">{{product.brand.name}}</span></td>
+                    <td>
+                        <div>
+                            <img ng-if="product.images && product.images[0]" ng-src="/imageUrl/{{product.imageUrl}}" alt="Product Image" class="product-image">
+                            <img ng-if="!product.images || !product.images[0]" alt="Default Image"
+                                 class="product-image rounded">
+                            <span ng-if="product.images.length > 1">+{{product.images.length - 1}} ảnh khác</span>
+                            <button ng-if="product.images.length > 1" class="btn btn-link" ng-click="showImages(product)">Xem ảnh</button>
+                        </div>
+                    </td>
+
+                    <td>
+                        <button class="btn btn-sm btn-info me-1" ng-click="editProduct(product)">
+                            <span class="material-symbols-rounded" translate="no">edit</span>
+                        </button>
+                        <button class="btn btn-sm btn-danger" ng-click="deleteProduct(product.id)">
+                            <span class="material-symbols-rounded" translate="no">delete</span>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- Pagination -->
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" ng-class="{disabled: currentPage === 1}">
+                    <a class="page-link" href ng-click="changePage(1)">
+                        <span class="material-symbols-rounded" translate="no">first_page</span>
+                    </a>
+                </li>
+                <li class="page-item" ng-class="{disabled: currentPage === 1}">
+                    <a class="page-link" href ng-click="changePage(currentPage - 1)">
+                        <span class="material-symbols-rounded" translate="no">chevron_left</span>
+                    </a>
+                </li>
+                <li class="page-item" ng-repeat="page in totalPages()" ng-class="{active: currentPage === page}">
+                    <a class="page-link" href ng-click="changePage(page)">{{page}}</a>
+                </li>
+                <li class="page-item" ng-class="{disabled: currentPage === totalPages().length}">
+                    <a class="page-link" href ng-click="changePage(currentPage + 1)">
+                        <span class="material-symbols-rounded" translate="no">chevron_right</span>
+                    </a>
+                </li>
+                <li class="page-item" ng-class="{disabled: currentPage === totalPages().length}">
+                    <a class="page-link" href ng-click="changePage(totalPages().length)">
+                        <span class="material-symbols-rounded" translate="no">last_page</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Modal for Image Viewer -->
+    <div class="modal fade" id="imageViewerModal" tabindex="-1" aria-labelledby="imageViewerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageViewerModalLabel">Xem ảnh sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item" ng-repeat="image in selectedProduct.images" ng-class="{'active': $first}">
+                                <img ng-src="/imageUrl/{{image.imageUrl}}" class="d-block w-100" alt="...">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

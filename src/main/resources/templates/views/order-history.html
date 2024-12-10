@@ -1,0 +1,397 @@
+<style>
+        :root {
+            --primary-color: #937245;
+            --accent-color: #937245;
+            --hover-color: #7c5f39;
+            --text-color: #937245;
+            --light-bg: #f8f9fa;
+            --transition: all 0.3s ease;
+        }
+
+        .order-history-container {
+            padding: 2rem 0;
+            min-height: 60vh;
+            background: var(--light-bg);
+        }
+
+        .page-title {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 60%;
+            height: 2px;
+            background: var(--accent-color);
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--light-bg);
+            margin-bottom: 1rem;
+        }
+
+        .order-id {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .order-date {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .order-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .order-details {
+            margin: 1rem 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .detail-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #212529;
+            font-weight: 500;
+        }
+
+        .order-items {
+            background: var(--light-bg);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .item-card {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 1rem;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-weight: 500;
+            margin-bottom: 0.2rem;
+        }
+
+        .item-price {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .item-quantity {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .view-details-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .view-details-btn:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .empty-orders {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .empty-orders .material-symbols-outlined {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .empty-orders h3 {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        .empty-orders p {
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+
+        .shop-now-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .shop-now-btn:hover {
+            background: var(--hover-color);
+            color: white;
+        }
+        .cancel-order-btn,
+        .reorder-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Style cho nút hủy đơn */
+        .cancel-order-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .cancel-order-btn:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .cancel-order-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Style cho nút đặt lại đơn */
+        .reorder-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .reorder-btn:hover {
+            background-color: var(--hover-color);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(147, 114, 69, 0.3);
+        }
+
+        .reorder-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Style cho container chứa các nút */
+        .order-actions {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .cancel-order-btn,
+            .reorder-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .order-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Disabled state */
+        .cancel-order-btn:disabled,
+        .reorder-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Optional: Thêm icon cho các nút */
+        .cancel-order-btn::before {
+            content: '×';
+            font-size: 1.2em;
+            line-height: 1;
+        }
+
+        .reorder-btn::before {
+            content: '↻';
+            font-size: 1.2em;
+            line-height: 1;
+        }
+    </style>
+
+<body>
+
+<div class="order-history-container" ng-controller="OrderHistoryController">
+    <div class="container">
+        <h2 class="page-title">Lịch sử đơn hàng</h2>
+
+        <!-- Empty State -->
+        <div class="empty-orders" ng-if="orders.length === 0">
+            <span class="material-symbols-outlined" translate="no">shopping_bag</span>
+            <h3>Chưa có đơn hàng nào</h3>
+            <p>Hãy khám phá các sản phẩm của chúng tôi và đặt đơn hàng đầu tiên của bạn</p>
+            <a href="#!/shop" class="shop-now-btn">Mua sắm ngay</a>
+        </div>
+
+        <!-- Orders List -->
+        <div class="orders-list" ng-if="orders.length > 0">
+            <div class="order-card" ng-repeat="order in orders | orderBy: '-orderDate'">
+                <div class="order-header">
+                    <div>
+                        <span>Mã đơn hàng:</span>
+                        <span class="order-id">{{order.id}}</span>
+                        <span class="order-date">{{order.orderDate | date:'dd/MM/yyyy | HH:mm:ss'}}</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="cancel-order-btn"
+                                ng-if="order.status === 'Pending'"
+                                ng-click="cancelOrder(order.id)">
+                            Hủy đơn hàng
+                        </button>
+                        <button class="reorder-btn"
+                                ng-if="order.status === 'Canceled'"
+                                ng-click="reorder(order)">
+                            Đặt lại đơn hàng
+                        </button>
+                        <span class="order-status"
+                              ng-class="{
+                                  'status-pending': order.status === 'Pending',
+                                  'status-confirmed': order.status === 'Confirmed',
+                                  'status-delivered': order.status === 'Delivered',
+                                  'status-cancelled': order.status === 'Canceled'
+                              }">
+                            {{order.status}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="order-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Người nhận:</span>
+                        <span class="detail-value">{{order.recipientName}}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Số điện thoại:</span>
+                        <span class="detail-value">{{order.phoneNumber}}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Địa chỉ:</span>
+                        <span class="detail-value">{{order.address}}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Phương thức thanh toán:</span>
+                        <span class="detail-value">{{order.paymentMethod}}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Trạng thái thanh toán:</span>
+                        <span class="detail-value">{{order.paymentStatus}}</span>
+                    </div>
+                    <div class="detail-row" ng-if="order.promoCode">
+                        <span class="detail-label">Mã giảm giá:</span>
+                        <span class="detail-value">{{order.promoCode}}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Tổng tiền:</span>
+                        <span class="detail-value">{{order.totalPrice | number}}đ</span>
+                    </div>
+                </div>
+
+                <button class="view-details-btn" ng-click="viewOrderDetails(order.id)">
+                    Xem chi tiết
+                </button>
+
+                <!-- Order Details Expansion -->
+                <div class="order-items" ng-if="selectedOrderDetails.id === order.id">
+                    <h4>Sản phẩm đã đặt</h4>
+                    <div class="item-card" ng-repeat="item in selectedOrderDetails.items">
+                        <img ng-src="/imageUrl/{{item.imageUrl}}" alt="{{item.productName}}" class="item-image"/>
+                        <div class="item-details">
+                            <div class="item-name">{{item.productName}}</div>
+                            <div class="item-price">{{item.price | number}}đ</div>
+                            <div class="item-quantity">Số lượng: {{item.quantity}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

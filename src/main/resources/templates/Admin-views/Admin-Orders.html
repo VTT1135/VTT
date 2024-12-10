@@ -1,0 +1,519 @@
+<style>
+
+    .table {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .table thead {
+        background-color: #4a90e2;
+        color: white;
+    }
+
+    .table th {
+        padding: 15px;
+        font-weight: 500;
+    }
+
+    .table td {
+        padding: 12px;
+        vertical-align: middle;
+    }
+
+
+    .modal-content {
+        border-radius: 15px;
+    }
+
+    .modal-header {
+        background-color: #4a90e2;
+        color: white;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .modal-body {
+        padding: 25px;
+    }
+
+
+
+    .order-item img {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        margin-right: 15px;
+        object-fit: cover;
+    }
+
+
+
+    .modal-dialog {
+        max-width: 50vw !important;
+        margin: 1.75rem auto;
+    }
+
+    .modal {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        padding-left: 0 !important;
+    }
+
+    /* Xóa hoặc điều chỉnh backdrop */
+    .modal-backdrop {
+        display: none; /* Hoặc opacity: 0.3 nếu muốn giữ backdrop nhẹ */
+    }
+
+    /* Đảm bảo modal vẫn hiển thị trên cùng */
+    .modal {
+        z-index: 1060 !important;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 8px 24px rgba(43, 54, 116, 0.1);
+        background: var(--bg-color);
+    }
+
+    /* Header style */
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        border-radius: 20px 20px 0 0;
+        border-bottom: none;
+        padding: 1.5rem;
+    }
+
+    .modal-title {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-close {
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        padding: 0.75rem;
+    }
+
+    /* Body style */
+    .modal-body {
+        padding: 1.5rem;
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+
+    /* Footer style */
+    .modal-footer {
+        border-top: 1px solid rgba(112, 144, 176, 0.08);
+        padding: 1rem 1.5rem;
+        background: white;
+        border-radius: 0 0 20px 20px;
+    }
+
+    /* Button styles */
+    .modal-footer .btn {
+        padding: 0.5rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-success {
+        background: var(--success-color);
+        border: none;
+    }
+
+    .btn-danger {
+        background: var(--danger-color);
+        border: none;
+    }
+
+    .btn-secondary {
+        background: var(--text-secondary);
+        border: none;
+    }
+
+    /* Dashboard card trong modal */
+    .modal .dashboard-card {
+        background: white;
+        margin-bottom: 1rem;
+    }
+
+    /* Table trong modal */
+    .modal .table {
+        margin-bottom: 0;
+    }
+
+    .modal .table thead {
+        background: linear-gradient(135deg, rgba(67, 24, 255, 0.1) 0%, rgba(134, 140, 255, 0.1) 100%);
+        color: var(--text-primary);
+    }
+
+    .modal .table th {
+        font-weight: 600;
+        padding: 1rem;
+    }
+
+    /* Animation */
+    .modal.fade .modal-dialog {
+        transform: scale(0.95);
+        transition: transform 0.2s ease-out;
+    }
+
+    .modal.show .modal-dialog {
+        transform: scale(1);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .modal-dialog {
+            max-width: 95vw !important;
+            margin: 1rem auto;
+        }
+    }
+</style>
+
+<body ng-controller="OrderController">
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="dashboard-card mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="m-0">
+                <span class="material-symbols-rounded me-2" translate="no">shopping_cart</span>
+                Quản lý đơn hàng
+            </h3>
+        </div>
+    </div>
+
+
+    <!-- Search and Filter Section -->
+    <div class="dashboard-card mb-4">
+        <div class="row g-3">
+            <!-- Search Bar -->
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <span class="material-symbols-rounded" translate="no">search</span>
+                    </span>
+                    <input type="text"
+                           class="form-control"
+                           ng-model="searchQuery"
+                           placeholder="Tìm kiếm đơn hàng..."
+                           ng-model-options="{ debounce: 300 }">
+                </div>
+            </div>
+
+            <!-- Status Filters -->
+            <div class="col-md-8">
+                <div class="d-flex gap-2 justify-content-end">
+                    <button class="btn"
+                            ng-class="{'btn-info': selectedStatus === 'all', 'btn-outline-info': selectedStatus !== 'all'}"
+                            ng-click="filterByStatus('all')">
+                        Tất cả
+                    </button>
+                    <button class="btn"
+                            ng-class="{'btn-warning': selectedStatus === 'Pending', 'btn-outline-warning': selectedStatus !== 'Pending'}"
+                            ng-click="filterByStatus('Pending')">
+                        Chờ xử lý
+                    </button>
+                    <button class="btn"
+                            ng-class="{'btn-info': selectedStatus === 'Confirmed', 'btn-outline-info': selectedStatus !== 'Confirmed'}"
+                            ng-click="filterByStatus('Confirmed')">
+                        Đã xác nhận
+                    </button>
+                    <button class="btn"
+                            ng-class="{'btn-success': selectedStatus === 'Completed', 'btn-outline-success': selectedStatus !== 'Completed'}"
+                            ng-click="filterByStatus('Completed')">
+                        Hoàn thành
+                    </button>
+                    <button class="btn"
+                            ng-class="{'btn-danger': selectedStatus === 'Canceled', 'btn-outline-danger': selectedStatus !== 'Canceled'}"
+                            ng-click="filterByStatus('Canceled')">
+                        Đã hủy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Orders Table Card -->
+    <div class="dashboard-card mb-4">
+        <div class="row g-3">
+
+            <!-- Date Filters -->
+            <div class="col-md-12">
+                <div class="d-flex gap-2 align-items-center">
+                    <div class="input-group" style="max-width: 200px;">
+                    <span class="input-group-text">
+                        <span class="material-symbols-rounded" translate="no">calendar_today</span>
+                    </span>
+                        <input type="date"
+                               class="form-control"
+                               ng-model="dateFilter"
+                               ng-change="filterByDate()">
+                    </div>
+
+                    <div class="input-group" style="max-width: 200px;">
+                        <span class="input-group-text">Tháng</span>
+                        <input type="month"
+                               class="form-control"
+                               ng-model="monthFilter"
+                               ng-change="filterByMonth()">
+                    </div>
+
+                    <div class="input-group" style="max-width: 200px;">
+                        <span class="input-group-text">Từ</span>
+                        <input type="date"
+                               class="form-control"
+                               ng-model="dateRange.start"
+                               ng-change="filterByDateRange()">
+                    </div>
+
+                    <div class="input-group" style="max-width: 200px;">
+                        <span class="input-group-text">Đến</span>
+                        <input type="date"
+                               class="form-control"
+                               ng-model="dateRange.end"
+                               ng-change="filterByDateRange()">
+                    </div>
+
+                    <button class="btn btn-outline-secondary" ng-click="clearDateFilters()">
+                        <span class="material-symbols-rounded" translate="no">clear</span>
+                        Xóa bộ lọc
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th>Mã ĐH</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Trạng thái</th>
+                        <th>Mã KM</th>
+                        <th>Phương thức thanh toán</th>
+                        <th>Thanh toán</th>
+                        <th>Tổng tiền</th>
+                        <th>Người nhận</th>
+                        <th>SĐT</th>
+                        <th>Địa chỉ</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="order in filterOrders()">
+                        <td><strong>{{order.id}}</strong></td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="material-symbols-rounded me-2" translate="no">person</span>
+                                {{order.user.username}}
+                            </div>
+                        </td>
+                        <td>{{formatDate(order.orderDate)}}</td>
+                        <td>
+                                    <span class="badge" ng-class="{
+                                        'bg-warning': order.status === 'Pending',
+                                        'bg-success': order.status === 'Completed',
+                                        'bg-danger': order.status === 'Canceled',
+                                        'bg-info': order.status === 'Confirmed'
+                                    }">{{order.status}}</span>
+                        </td>
+                        <td>
+                                    <span class="badge bg-primary" ng-if="order.promoCode">
+                                        {{order.promoCode}}
+                                    </span>
+                            <span ng-if="!order.promoCode">-</span>
+                        </td>
+                        <td>{{order.payment.paymentMethod}}</td>
+                        <td>{{order.payment.status}}</td>
+                        <td><strong>{{order.totalPrice | currency:"₫":0}}</strong></td>
+                        <td>{{order.recipientName}}</td>
+                        <td>{{order.phoneNumber}}</td>
+                        <td class="text-truncate" style="max-width: 200px;">{{order.address}}</td>
+                        <td class="text-end">
+                            <button class="btn btn-info btn-sm" ng-click="openOrderDetails(order)">
+                                <span class="material-symbols-rounded" translate="no">visibility</span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- No Results Message -->
+<div class="text-center py-4" ng-if="filterOrders().length === 0">
+    <span class="material-symbols-rounded" style="font-size: 48px; color: var(--text-secondary);" translate="no">
+        search_off
+    </span>
+    <p class="mt-2 text-muted">Không tìm thấy đơn hàng phù hợp</p>
+</div>
+
+<!-- Pagination -->
+<nav class="mt-4" ng-if="filterOrders().length > itemsPerPage">
+    <ul class="pagination justify-content-center">
+        <li class="page-item" ng-class="{disabled: currentPage === 1}">
+            <a class="page-link" href ng-click="changePage(1)">
+                <span class="material-symbols-rounded" translate="no">first_page</span>
+            </a>
+        </li>
+        <li class="page-item" ng-class="{disabled: currentPage === 1}">
+            <a class="page-link" href ng-click="changePage(currentPage - 1)">
+                <span class="material-symbols-rounded" translate="no">chevron_left</span>
+            </a>
+        </li>
+        <li class="page-item"
+            ng-repeat="page in getPages()"
+            ng-class="{active: currentPage === page}">
+            <a class="page-link" href ng-click="changePage(page)">{{page}}</a>
+        </li>
+        <li class="page-item" ng-class="{disabled: currentPage === getPages().length}">
+            <a class="page-link" href ng-click="changePage(currentPage + 1)">
+                <span class="material-symbols-rounded" translate="no">chevron_right</span>
+            </a>
+        </li>
+        <li class="page-item" ng-class="{disabled: currentPage === getPages().length}">
+            <a class="page-link" href ng-click="changePage(getPages().length)">
+                <span class="material-symbols-rounded" translate="no">last_page</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<!-- Order Details Modal -->
+<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <span class="material-symbols-rounded me-2" translate="no">receipt_long</span>
+                    Chi tiết đơn hàng {{selectedOrder.id}}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Order Information -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="dashboard-card h-100">
+                            <h5 class="mb-3">
+                                <span class="material-symbols-rounded me-2" translate="no">info</span>
+                                Thông tin đơn hàng
+                            </h5>
+                            <div class="mt-3">
+                                <p class="mb-2"><strong>Mã đơn hàng:</strong> {{selectedOrder.id}}</p>
+                                <p class="mb-2"><strong>Ngày đặt:</strong> {{formatDate(selectedOrder.orderDate)}}</p>
+                                <p class="mb-2">
+                                    <strong>Trạng thái:</strong>
+                                    <span class="badge" ng-class="{
+                                            'bg-warning': selectedOrder.status === 'Pending',
+                                            'bg-success': selectedOrder.status === 'Completed',
+                                            'bg-danger': selectedOrder.status === 'Canceled',
+                                            'bg-info': selectedOrder.status === 'Confirmed'
+                                        }">{{selectedOrder.status}}</span>
+                                </p>
+                                <p class="mb-2"><strong>Mã KM:</strong> {{selectedOrder.promoCode}}</p>
+                                <p class="mb-2"><strong>Phương thức thanh toán:</strong> {{selectedOrder.payment.paymentMethod}}</p>
+                                <p class="mb-2"><strong>Thanh toán:</strong> {{selectedOrder.payment.status}}</p>
+                                <p class="mb-2"><strong>Tổng tiền:</strong> {{selectedOrder.totalPrice | currency:"₫":0}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Information -->
+                    <div class="col-md-6">
+                        <div class="dashboard-card h-100">
+                            <h5 class="mb-3">
+                                <span class="material-symbols-rounded me-2" translate="no">person</span>
+                                Thông tin người nhận
+                            </h5>
+                            <div class="mt-3">
+                                <p class="mb-2"><strong>Họ tên:</strong> {{selectedOrder.recipientName}}</p>
+                                <p class="mb-2"><strong>Số điện thoại:</strong> {{selectedOrder.phoneNumber}}</p>
+                                <p class="mb-2"><strong>Địa chỉ:</strong> {{selectedOrder.address}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="dashboard-card">
+                    <h5 class="mb-3">
+                        <span class="material-symbols-rounded me-2" translate="no">shopping_cart</span>
+                        Chi tiết sản phẩm
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-end">Đơn giá</th>
+                                <th class="text-end">Thành tiền</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="item in selectedOrder.orderItems">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img ng-src="/imageUrl/{{item.product.imageUrl}}"
+                                             alt="{{item.product.name}}"
+                                             class="me-3"
+                                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                                        <span>{{item.product.name}}</span>
+                                    </div>
+                                </td>
+                                <td class="text-center">{{item.quantity}}</td>
+                                <td class="text-end">{{item.price | currency:"₫":0}}</td>
+                                <td class="text-end">{{item.quantity * item.price | currency:"₫":0}}</td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Tổng cộng:</strong></td>
+                                <td class="text-end"><strong>{{selectedOrder.totalPrice | currency:"₫":0}}</strong></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <span class="material-symbols-rounded me-2" translate="no">close</span>
+                    Đóng
+                </button>
+                <button type="button" class="btn btn-info"
+                        ng-if="selectedOrder.status === 'Pending'"
+                        ng-click="updateOrderStatus(selectedOrder.id, 'Confirmed')">
+                    <span class="material-symbols-rounded me-2" translate="no">check_circle</span>
+                    Xác nhận đơn hàng
+                </button>
+
+                <button type="button" class="btn btn-danger"
+                        ng-if="selectedOrder.status === 'Pending'"
+                        ng-click="updateOrderStatus(selectedOrder.id, 'Canceled')">
+                    <span class="material-symbols-rounded me-2" translate="no">cancel</span>
+                    Hủy đơn hàng
+                </button>
+                <button type="button" class="btn btn-success"
+                        ng-if="selectedOrder.status === 'Confirmed'"
+                        ng-click="updateOrderStatus(selectedOrder.id, 'Completed')">
+                    <span class="material-symbols-rounded me-2" translate="no">done_all</span>
+                    Hoàn tất đơn hàng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

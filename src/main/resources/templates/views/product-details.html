@@ -1,0 +1,959 @@
+<style>
+        :root {
+            --primary-color: #937245;
+            --accent-color: #937245;
+            --hover-color: #7c5f39;
+            --text-color: #937245;
+            --light-bg: #f8f9fa;
+            --transition: all 0.3s ease;
+        }
+
+        .product-image-container {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        .product-image {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+        }
+
+        .product-info {
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-top: 2rem;
+        }
+
+        .product-title {
+            font-size: 1.3rem; /* Điều chỉnh kích thước chữ nếu cần */
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+            word-wrap: break-word; /* Cho phép xuống dòng ở bất kỳ điểm nào */
+            word-break: break-word; /* Đảm bảo văn bản dài không gây tràn */
+            white-space: normal; /* Văn bản xuống dòng tự động */
+            overflow: visible; /* Bỏ cắt văn bản tràn */
+            text-align: left; /* Căn trái để dễ đọc */
+        }
+
+
+        .product-price {
+            font-size: 2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-description {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .btn-add-to-cart {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .btn-add-to-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(147, 114, 69, 0.3);
+        }
+
+        .product-meta {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+
+        .meta-item .material-symbols-outlined {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .related-products {
+            margin-top: 4rem;
+        }
+
+        .related-title {
+            font-size: 1.8rem;
+            color: #1a1a1a;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .related-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--primary-color);
+        }
+
+        .products-slider {
+            position: relative;
+            padding: 0 40px;
+            margin: 2rem 0;
+        }
+
+        .products-wrapper {
+            overflow: hidden;
+        }
+
+        .products-track {
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+
+        .product-slide {
+            flex: 0 0 25%;
+            min-width: 25%;
+            padding: 0 10px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Comments Section Styles */
+        .comment-form {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+
+        /* Rating Stars */
+        .stars {
+            display: inline-flex;
+            gap: 8px;
+        }
+
+        .stars .material-symbols-outlined {
+            font-size: 24px;
+            cursor: pointer;
+            color: #e4e5e9;
+            transition: var(--transition);
+        }
+
+        .stars .material-symbols-outlined.active {
+            color: #ffc107;
+        }
+
+        .stars .material-symbols-outlined:hover {
+            transform: scale(1.2);
+        }
+
+        /* Upload Button */
+        .upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: #666;
+        }
+
+        .upload-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Image Preview */
+        .preview-image {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .remove-image-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #dc3545;
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .remove-image-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Comments List */
+        .comment-item {
+            border: 1px solid #eee;
+            transition: var(--transition);
+        }
+
+        .comment-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .user-icon {
+            color: var(--primary-color);
+            font-size: 24px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        .username {
+            color: #333;
+            margin-right: 8px;
+        }
+
+        .comment-date {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .rating-display .star-icon {
+            font-size: 18px;
+            color: #e4e5e9;
+        }
+
+        .rating-display .star-icon.filled {
+            color: #ffc107;
+        }
+
+        .comment-text {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .uploaded-image {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .uploaded-image:hover {
+            opacity: 0.9;
+        }
+
+        .custom-btn {
+            background-color: #937245; /* Màu nền chính của bạn */
+            color: white; /* Màu chữ */
+            border: none; /* Bỏ viền nếu cần */
+        }
+
+        .custom-btn:hover {
+            background-color: #7c5f39; /* Màu nền khi hover */
+            color: white; /* Màu chữ khi hover */
+        }
+
+        .custom-btn:disabled {
+            background-color: #e0e0e0; /* Màu nền cho nút bị vô hiệu hóa */
+            color: #a0a0a0; /* Màu chữ cho nút bị vô hiệu hóa */
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            padding: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive Adjustments */
+        .comment-images {
+            margin-top: 10px;
+        }
+
+        .image-container {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100px;  /* Kích thước cố định cho container */
+            height: 100px; /* Kích thước cố định cho container */
+        }
+
+        .comment-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Đảm bảo ảnh luôn đẹp và không bị méo */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-container:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .image-container:hover .comment-thumb {
+            transform: scale(1.05);
+        }
+
+        .remaining-count {
+            color: white;
+            font-size: 1rem; /* Giảm kích thước chữ */
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .rating-summary {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .average-rating {
+            text-align: center;
+        }
+
+        .rating-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffc107;
+        }
+
+        .rating-max {
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+
+        .rating-stars .material-symbols-outlined {
+            color: #e4e5e9;
+            font-size: 1.2rem;
+        }
+
+        .rating-stars .material-symbols-outlined.filled {
+            color: #ffc107;
+        }
+
+        .total-ratings {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .rating-bars {
+            max-width: 400px;
+        }
+
+        .rating-bar-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .star-count {
+            min-width: 15px;
+            text-align: right;
+        }
+
+        .star-icon {
+            color: #ffc107;
+            font-size: 1rem;
+        }
+
+        .rating-count {
+            min-width: 30px;
+            text-align: right;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .progress {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            transition: width 0.6s ease;
+        }
+
+        .no-ratings {
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .image-container {
+                width: 80px;
+                height: 80px;
+            }
+
+            .remaining-count {
+                font-size: 0.9rem;
+            }
+        }
+
+        .uploaded-image {
+            max-width: 200px;
+            height: auto;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        /* Modal styles for full image view */
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .image-modal.show {
+            display: flex;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .prev-btn {
+            left: 20px;
+        }
+
+        .next-btn {
+            right: 20px;
+        }
+
+        .image-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 15px;
+            border-radius: 15px;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            z-index: 1;
+        }
+
+        .slider-btn:hover {
+            background: var(--hover-color);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev-btn {
+            left: 0;
+        }
+
+        .next-btn {
+            right: 0;
+        }
+
+        @media (max-width: 1200px) {
+            .product-slide {
+                flex: 0 0 33.333%;
+                min-width: 33.333%;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .product-slide {
+                flex: 0 0 50%;
+                min-width: 50%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .product-slide {
+                flex: 0 0 100%;
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product-title {
+                font-size: 2rem;
+            }
+
+            .product-info {
+                margin-top: 2rem;
+            }
+        }
+
+        /* Product Card trong Related Products */
+        .product-slide .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            height: 100%;
+        }
+
+        .product-slide .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .product-slide .product-image-container {
+            position: relative;
+            overflow: hidden;
+            padding-top: 100%;
+            margin-top: 0;
+        }
+
+        .product-slide .product-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-slide .product-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(147, 114, 69, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .product-slide .product-card:hover .product-overlay {
+            opacity: 1;
+        }
+
+        .product-slide .product-details {
+            padding: 1.5rem;
+        }
+
+        .product-slide .product-title {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .product-slide .product-price {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        /* Cập nhật style cho nút cart trong overlay */
+        .product-slide .btn-cart {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .product-slide .btn-cart:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* Điều chỉnh khoảng cách giữa các slide */
+        .products-track {
+            gap: 0;
+            padding: 10px 0;
+        }
+
+        .product-slide {
+            padding: 0 10px;
+        }
+    </style>
+
+<body ng-controller="ProductDetailsController">
+
+<div class="container">
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-md-6">
+            <div class="product-image-container">
+                <img ng-src="/imageUrl/{{product.imageUrl}}" class="product-image" alt="{{product.name}}">
+            </div>
+
+            <!-- Additional Images Section -->
+            <div class="additional-images mt-3">
+                <div class="d-flex flex-wrap">
+                    <div class="me-2" ng-repeat="image in product.images">
+                        <img ng-src="/imageUrl/{{image.imageUrl}}" class="preview-image" alt="{{product.name}}" style="max-width: 100px; cursor: pointer;" ng-click="showFullImage(image.imageUrl, product.images)">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="col-md-6">
+            <div class="product-info">
+                <h1 class="product-title">{{product.name}}</h1>
+
+                <!-- Phần đánh giá -->
+                <div class="rating-summary mb-3" ng-if="totalRatings > 0">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="average-rating">
+                            <span class="rating-number">{{averageRating | number:1}}</span>
+                            <span class="rating-max">/5</span>
+                        </div>
+                        <div class="rating-stars">
+                    <span class="material-symbols-outlined"
+                          ng-repeat="star in [1,2,3,4,5]"
+                          ng-class="{'filled': star <= averageRating}" translate="no">
+                        star
+                    </span>
+                        </div>
+                        <div class="total-ratings">
+                            ({{totalRatings}} đánh giá)
+                        </div>
+                    </div>
+
+                    <!-- Rating bars -->
+                    <div class="rating-bars mt-2">
+                        <div class="rating-bar-item d-flex align-items-center gap-2"
+                             ng-repeat="i in [5,4,3,2,1]">
+                            <span class="star-count">{{i}}</span>
+                            <span class="material-symbols-outlined star-icon" translate="no">star</span>
+                            <div class="progress flex-grow-1" style="height: 8px;">
+                                <div class="progress-bar bg-warning"
+                                     ng-style="{width: ((ratingStats[i] || 0) / totalRatings * 100) + '%'}">
+                                </div>
+                            </div>
+                            <span class="rating-count">{{ratingStats[i] || 0}}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hiển thị khi chưa có đánh giá -->
+                <div class="no-ratings mb-3" ng-if="totalRatings === 0">
+                    <div class="text-muted">
+                        <span class="material-symbols-outlined align-middle me-1" translate="no">star_outline</span>
+                        Chưa có đánh giá
+                    </div>
+                </div>
+
+                <div class="product-price">{{product.price | number}}đ</div>
+                <p class="product-description">{{product.description}}</p>
+
+                <button class="btn-add-to-cart" ng-click="addToCart(product)">
+                    <span class="material-symbols-outlined align-middle me-2" translate="no">shopping_cart</span>
+                    Thêm vào giỏ hàng
+                </button>
+
+                <div class="product-meta">
+                    <div class="meta-item">
+                        <span class="material-symbols-outlined" translate="no">inventory_2</span>
+                        <span>Danh mục: {{product.category.name}}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="material-symbols-outlined" translate="no">branding_watermark</span>
+                        <span>Thương hiệu: {{product.brand.name}}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="material-symbols-outlined" translate="no">local_shipping</span>
+                        <span>Miễn phí vận chuyển</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="material-symbols-outlined" translate="no">verified</span>
+                        <span>Bảo hành chính hãng</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="related-title mb-4">Đánh giá sản phẩm</h2>
+
+                <!-- Comment Form -->
+                <div class="comment-form bg-white p-4 rounded-3 mb-4">
+                    <form ng-submit="addComment()">
+                        <!-- Rating Stars -->
+                        <div class="rating-section mb-3">
+                            <label class="form-label">Đánh giá của bạn:</label>
+                            <div class="stars">
+                            <span ng-repeat="star in [1,2,3,4,5]"
+                                  class="material-symbols-outlined"
+                                  ng-class="{'active': star <= rating}"
+                                  ng-click="setRating(star)" translate="no">
+                                {{star <= rating ? 'star' : 'star_outline'}}
+                            </span>
+                            </div>
+                        </div>
+
+                        <!-- Comment Text -->
+                        <div class="form-group mb-3">
+                        <textarea class="form-control"
+                                  ng-model="commentText"
+                                  rows="3"
+                                  placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."></textarea>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div class="image-upload mb-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <label for="commentImages" class="upload-btn">
+                                    <span class="material-symbols-outlined" translate="no">add_photo_alternate</span>
+                                    Thêm hình ảnh
+                                </label>
+                                <input type="file" id="commentImages" multiple>
+                            </div>
+
+                            <!-- Image Previews -->
+                            <div class="image-preview mt-2" ng-if="imagePreview.length > 0">
+                                <div class="d-flex flex-wrap gap-2">
+                                    <div class="position-relative d-inline-block" ng-repeat="preview in imagePreview track by $index">
+                                        <img ng-src="{{preview}}" alt="Preview" class="preview-image">
+                                        <button type="button"
+                                                class="remove-image-btn"
+                                                ng-click="removeImage($index)">
+                                            <span class="material-symbols-outlined" translate="no">close</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn-add-to-cart" style="max-width: 200px;">
+                            <span class="material-symbols-outlined align-middle me-2" translate="no">send</span>
+                            Gửi đánh giá
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Comments List -->
+                <div class="comments-list">
+                    <div ng-repeat="comment in comments"
+                         class="comment-item bg-white p-4 rounded-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="comment-header">
+                                <div class="user-info mb-2">
+                                    <span class="material-symbols-outlined user-icon" translate="no">account_circle</span>
+                                    <strong class="username">{{comment.user.username}}</strong>
+                                    <span class="comment-date">{{comment.createdAt | date:'dd/MM/yyyy | HH:mm:ss'}}</span>
+                                </div>
+                                <div class="rating-display">
+                                <span ng-repeat="star in [1,2,3,4,5]"
+                                      class="material-symbols-outlined star-icon"
+                                      ng-class="{'filled': star <= comment.rating}" translate="no">
+                                    star
+                                </span>
+                                </div>
+                            </div>
+                            <button ng-click="deleteComment(comment.id)"
+                                    class="delete-btn"
+                                    ng-if="isCommentOwner(comment)">
+                                <span class="material-symbols-outlined" translate="no">delete</span>
+                            </button>
+                        </div>
+
+                        <p class="comment-text mt-2">{{comment.commentText}}</p>
+
+                        <div class="comment-images mt-2" ng-if="comment.commentImages && comment.commentImages.length > 0">
+                            <div class="image-container position-relative d-inline-block">
+                                <img ng-src="/imageUrl/{{comment.commentImages[0]}}"
+                                     alt="Comment image"
+                                     class="comment-thumb"
+                                     ng-click="showFullImage(comment.commentImages[0], comment.commentImages)">
+                                <div class="image-overlay d-flex align-items-center justify-content-center"
+                                     ng-if="comment.commentImages.length > 1"
+                                     ng-click="showFullImage(comment.commentImages[0], comment.commentImages)">
+                                    <span class="remaining-count" translate="no">+{{comment.commentImages.length - 1}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Comments Pagination -->
+    <div class="pagination d-flex justify-content-center align-items-center my-4">
+        <button class="btn custom-btn me-2 d-flex align-items-center" ng-click="prevPage()" ng-disabled="currentPage === 0">
+            <span class="material-symbols-outlined me-1" translate="no">chevron_left</span> Previous
+        </button>
+        <span class="mx-2">Page {{currentPage + 1}} of {{totalPages}}</span>
+        <button class="btn custom-btn ms-2 d-flex align-items-center" ng-click="nextPage()" ng-disabled="currentPage >= totalPages - 1">
+            Next <span class="material-symbols-outlined ms-1" translate="no">chevron_right</span>
+        </button>
+    </div>
+
+    <div class="image-modal" ng-class="{'show': isModalOpen}">
+        <span class="close-btn material-symbols-outlined" ng-click="closeModal()" translate="no">close</span>
+
+        <!-- Nút điều hướng trái -->
+        <button class="nav-btn prev-btn"
+                ng-click="prevImage()"
+                ng-show="currentImageIndex > 0">
+            <span class="material-symbols-outlined" translate="no">chevron_left</span>
+        </button>
+
+        <img ng-src="{{fullImageUrl}}" alt="Full size image">
+
+        <!-- Nút điều hướng phải -->
+        <button class="nav-btn next-btn"
+                ng-click="nextImage()"
+                ng-show="currentImageIndex < modalImages.length - 1">
+            <span class="material-symbols-outlined" translate="no">chevron_right</span>
+        </button>
+
+        <!-- Hiển thị vị trí ảnh hiện tại -->
+        <div class="image-counter">{{currentImageIndex + 1}} / {{modalImages.length}}</div>
+    </div>
+    <!-- Related Products -->
+    <div class="related-products">
+        <h2 class="related-title">Sản phẩm liên quan</h2>
+        <div class="products-slider">
+            <button class="slider-btn prev-btn"
+                    ng-click="prevSlide()"
+                    ng-style="{opacity: isPrevDisabled() ? '0.5' : '1'}">
+                <span class="material-symbols-outlined" translate="no">chevron_left</span>
+            </button>
+            <div class="products-wrapper">
+                <div class="products-track" ng-style="getSliderStyle()">
+                    <div class="product-slide" ng-repeat="product in relatedProducts">
+                        <div class="product-card">
+                            <div class="product-image-container">
+                                <a ng-href="#!/product-details/{{product.id}}">
+                                    <img ng-src="/imageUrl/{{product.imageUrl}}"
+                                         class="product-image"
+                                         alt="{{product.name}}">
+                                </a>
+                                <div class="product-overlay">
+                                    <a ng-href="#!/product-details/{{product.id}}"
+                                       class="btn-view">Xem chi tiết</a>
+                                    <button class="btn-cart" ng-click="addToCart(product)">
+                                        <span class="material-symbols-outlined" translate="no">shopping_cart</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="product-details">
+                                <h5 class="product-title">{{product.name}}</h5>
+                                <div class="product-price">{{product.price | number}}đ</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="slider-btn next-btn"
+                    ng-click="nextSlide()"
+                    ng-style="{opacity: isNextDisabled() ? '0.5' : '1'}">
+                <span class="material-symbols-outlined" translate="no">chevron_right</span>
+            </button>
+        </div>
+    </div>
+</div>

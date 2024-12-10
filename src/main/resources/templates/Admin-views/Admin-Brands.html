@@ -1,0 +1,72 @@
+
+
+<body ng-controller="AdminBrandsController" class="container py-5">
+<div class="container-fluid">
+  <!-- Page Header -->
+  <div class="dashboard-card mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <h3 class="m-0">
+        <span class="material-symbols-rounded me-2" translate="no">branding_watermark</span>
+        Quản lý thương hiệu
+      </h3>
+    </div>
+  </div>
+
+  <!-- Form Card -->
+  <div class="dashboard-card mb-4">
+    <form ng-submit="isEdit ? updateBrand() : saveBrand()" class="row g-3">
+      <div class="col-md-9">
+        <input type="text" class="form-control form-control-lg"
+               ng-model="brand.name" placeholder="Nhập tên thương hiệu" required>
+      </div>
+      <div class="col-md-4">
+        <input type="file" class="form-control form-control-lg"
+               id="brandImage" ng-model="brand.image" file-model="brand.image">
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button type="button" class="btn btn-primary w-100"
+                ng-click="saveBrand()" ng-if="!isEdit">
+          <span class="material-symbols-rounded me-2" translate="no">add</span>Thêm mới
+        </button>
+        <button type="button" class="btn btn-warning w-100"
+                ng-click="updateBrand()" ng-if="isEdit">
+          <span class="material-symbols-rounded me-2" translate="no">edit</span>Cập nhật
+        </button>
+        <button type="button" class="btn btn-secondary" ng-click="resetForm()">
+          <span class="material-symbols-rounded" translate="no">refresh</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Table Card -->
+  <div class="dashboard-card">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Hình ảnh</th>
+          <th scope="col">Tên thương hiệu</th>
+          <th scope="col" class="text-end">Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="brand in brands">
+          <td>{{ brand.id }}</td>
+          <td><img ng-if="brand.imageUrl" ng-src="/imageUrl/{{ brand.imageUrl }}" alt="{{ brand.name }}" width="90" height="70"></td>
+          <td>{{ brand.name }}</td>
+          <td class="text-end">
+            <button class="btn btn-info btn-sm" ng-click="editBrand(brand)">
+              <span class="material-symbols-rounded" translate="no">edit</span>
+            </button>
+            <button class="btn btn-danger btn-sm" ng-click="deleteBrand(brand.id)">
+              <span class="material-symbols-rounded" translate="no">delete</span>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

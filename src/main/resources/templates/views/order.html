@@ -1,0 +1,375 @@
+<style>
+    :root {
+      --primary-color: #937245;
+      --accent-color: #937245;
+      --hover-color: #7c5f39;
+      --text-color: #937245;
+      --light-bg: #f8f9fa;
+      --transition: all 0.3s ease;
+    }
+
+    .order-container {
+      padding: 2rem 0;
+      min-height: 60vh;
+      background: var(--light-bg);
+    }
+
+    .order-title {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .order-title::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 60%;
+      height: 2px;
+      background: var(--accent-color);
+    }
+
+    .order-section {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .section-title {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--light-bg);
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--light-bg);
+    }
+
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+
+    .item-image {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .item-details {
+      flex-grow: 1;
+      padding: 0 1rem;
+    }
+
+    .item-name {
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    .item-price {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .item-quantity {
+      color: #666;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(147, 114, 69, 0.25);
+    }
+
+    .payment-methods {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .payment-method {
+      flex: 1;
+      padding: 1rem;
+      border: 2px solid var(--light-bg);
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .payment-method.active {
+      border-color: var(--primary-color);
+      background: var(--light-bg);
+    }
+
+    .payment-method:hover {
+      border-color: var(--primary-color);
+    }
+
+    .order-summary {
+      background: var(--light-bg);
+      padding: 1.5rem;
+      border-radius: 10px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      color: #666;
+    }
+
+    .summary-item.total {
+      color: var(--primary-color);
+      font-weight: 600;
+      font-size: 1.2rem;
+      border-top: 2px solid #ddd;
+      padding-top: 1rem;
+      margin-top: 1rem;
+    }
+
+    .place-order-btn {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 1rem;
+      border-radius: 25px;
+      font-weight: 600;
+      margin-top: 1rem;
+      transition: var(--transition);
+    }
+
+    .place-order-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(147, 114, 69, 0.3);
+    }
+
+    .promo-section {
+      margin-top: 1rem;
+    }
+
+    .promo-input {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .promo-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 5px;
+      transition: var(--transition);
+    }
+
+    .promo-btn:hover {
+      background: var(--hover-color);
+    }
+
+    .alert {
+      margin-top: 1rem;
+      border-radius: 10px;
+    }
+    ul.list-group {
+      max-height: 200px;
+      overflow-y: auto;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    ul.list-group li:hover {
+      background-color: #f0f0f0;
+    }
+
+</style>
+
+<body ng-controller="OrderController">
+
+<div class="container order-container">
+  <div class="row">
+    <!-- Left Column - Order Details -->
+    <div class="col-lg-8">
+      <!-- Cart Items Section -->
+      <div class="order-section">
+        <h2 class="section-title">Giỏ hàng của bạn</h2>
+        <div class="cart-item" ng-repeat="item in cartItems">
+          <img ng-src="/imageUrl/{{item.imageUrl}}" alt="{{item.productName}}" class="item-image">
+          <div class="item-details">
+            <div class="item-name">{{item.productName}}</div>
+            <div class="item-price">{{item.price | number}}đ</div>
+            <div class="item-quantity">Số lượng: {{item.quantity}}</div>
+          </div>
+          <div class="item-total">
+            {{item.quantity * item.price | number}}đ
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipping Information -->
+      <div class="order-section">
+        <h2 class="section-title">Thông tin giao hàng</h2>
+        <div ng-if="!isAddingAddress">
+          <div class="mb-3" >
+            <strong>Người nhận:</strong> {{order.recipientName}}
+          </div>
+          <div class="mb-3">
+            <strong>Số điện thoại:</strong> {{order.phoneNumber}}
+          </div>
+          <div class="mb-3">
+            <strong>Địa chỉ:</strong> {{order.address}}
+          </div>
+          <button class="btn btn-outline-primary" ng-click="changeAddress()">Thay đổi địa chỉ</button>
+        </div>
+
+        <div id="recipientInfo" ng-if="isAddingAddress">
+          <form name="addressForm" novalidate>
+            <div class="mb-3">
+              <label class="form-label">Người nhận:</label>
+              <input
+                      type="text"
+                      class="form-control"
+                      ng-model="order.recipientName"
+                      ng-required="true"
+                      ng-minlength="2"
+                      ng-maxlength="50"
+                      ng-pattern="/^[A-Za-zÀ-ÿ\s]+$/"
+                      name="recipientName"
+              >
+              <div class="text-danger" ng-show="addressForm.recipientName.$touched && addressForm.recipientName.$invalid">
+                <small ng-show="addressForm.recipientName.$error.required">Vui lòng nhập tên người nhận.</small>
+                <small ng-show="addressForm.recipientName.$error.minlength">Tên người nhận phải dài ít nhất 2 ký tự.</small>
+                <small ng-show="addressForm.recipientName.$error.maxlength">Tên người nhận không quá 50 ký tự.</small>
+                <small ng-show="addressForm.recipientName.$error.pattern">Tên người nhận không được chứa số hoặc ký tự đặc biệt.</small>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Số điện thoại:</label>
+              <input
+                      type="text"
+                      class="form-control"
+                      ng-model="order.phoneNumber"
+                      ng-required="true"
+                      ng-pattern="/^(\+84|0)\d{9,10}$/"
+                      name="phoneNumber"
+              >
+              <div class="text-danger" ng-show="addressForm.phoneNumber.$touched && addressForm.phoneNumber.$invalid">
+                <small ng-show="addressForm.phoneNumber.$error.required">Vui lòng nhập số điện thoại.</small>
+                <small ng-show="addressForm.phoneNumber.$error.pattern">Số điện thoại không hợp lệ.</small>
+              </div>
+            </div>
+
+            <div class="mb-3 position-relative">
+              <label class="form-label">Địa chỉ:</label>
+              <input
+                      type="text"
+                      class="form-control"
+                      ng-model="order.address"
+                      ng-required="true"
+                      ng-change="fetchAddressSuggestions(order.address)"
+                      name="address"
+                      autocomplete="off"
+              >
+              <div class="text-danger" ng-show="addressForm.address.$touched && addressForm.address.$invalid">
+                <small ng-show="addressForm.address.$error.required">Vui lòng nhập địa chỉ.</small>
+              </div>
+              <!-- Gợi ý địa chỉ -->
+              <ul class="list-group position-absolute w-100" ng-if="addressSuggestions.length > 0">
+                <li
+                        class="list-group-item"
+                        ng-repeat="suggestion in addressSuggestions"
+                        ng-click="selectAddress(suggestion)">
+                  {{ suggestion.display_name }}
+                </li>
+              </ul>
+            </div>
+
+            <button
+                    class="btn btn-primary"
+                    ng-click="saveAddress()"
+                    ng-disabled="addressForm.$invalid">
+              Lưu địa chỉ
+            </button>
+          </form>
+        </div>
+      </div>
+
+        <!-- Payment Method -->
+      <div id="paymentMethod" class="order-section">
+        <h2 class="section-title">Phương thức thanh toán</h2>
+        <div class="payment-methods">
+          <div class="payment-method" ng-class="{'active': order.paymentMethod === 'COD'}" ng-click="order.paymentMethod = 'COD'">
+            <span class="material-symbols-outlined" translate="no">payments</span>
+            <div>Thanh toán khi nhận hàng</div>
+          </div>
+          <div class="payment-method" ng-class="{'active': order.paymentMethod === 'VNPAY'}" ng-click="order.paymentMethod = 'VNPAY'">
+            <span class="material-symbols-outlined" translate="no">account_balance</span>
+            <div>Thanh toán VNPAY</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column - Order Summary -->
+    <div class="col-lg-4">
+      <div class="order-section">
+        <h2 class="section-title">Tổng đơn hàng</h2>
+
+        <!-- Promo Code Section -->
+        <div class="promo-section">
+          <div class="promo-input">
+            <input type="text" class="form-control" ng-model="order.promoCode" placeholder="Nhập mã giảm giá" ng-disabled="promoApplied">
+            <button class="promo-btn" ng-click="applyPromoCode()" ng-disabled="promoApplied">
+              Áp dụng
+            </button>
+          </div>
+          <div class="alert" ng-if="promoMessage" ng-class="{'alert-success': promoSuccess, 'alert-danger': !promoSuccess}">
+            {{promoMessage}}
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+          <div class="summary-item">
+            <span>Tạm tính:</span>
+            <span>{{getSubtotal() | number}}đ</span>
+          </div>
+          <div class="summary-item" ng-if="promoApplied">
+            <span>Giảm giá:</span>
+            <span>-{{getDiscount() | number}}đ</span>
+          </div>
+          <div class="summary-item">
+            <span>Phí vận chuyển:</span>
+            <span>Miễn phí</span>
+          </div>
+          <div class="summary-item total">
+            <span>Tổng cộng:</span>
+            <span>{{getTotal() | number}}đ</span>
+          </div>
+        </div>
+
+        <!-- Place Order Button -->
+        <button class="place-order-btn" ng-click="placeOrder()">
+          Đặt hàng
+        </button>
+
+        <!-- Order Message -->
+        <div class="alert mt-3" ng-if="orderMessage" ng-class="{'alert-success': orderSuccess, 'alert-danger': !orderSuccess}">
+          {{orderMessage}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

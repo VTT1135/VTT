@@ -1,0 +1,68 @@
+<header class="sticky-header">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" translate="no" href="#!/">MiniStore</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- Các mục menu bên trái -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item me-4">
+            <a class="nav-link active" href="#!/">Trang chủ</a>
+          </li>
+          <li class="nav-item me-4">
+            <a class="nav-link" href="#!/shop">Shop</a>
+          </li>
+          <li class="nav-item me-4">
+            <a class="nav-link" href="#!/about">Giới thiệu</a>
+          </li>
+          <li class="nav-item me-4">
+            <a class="nav-link" href="#!/news">Tin tức</a>
+          </li>
+          <li class="nav-item me-4">
+            <a class="nav-link" href="#!/contact">Liên hệ</a>
+          </li>
+        </ul>
+
+        <!-- Menu tài khoản và giỏ hàng cố định bên phải -->
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link px-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="material-symbols-outlined" translate="no" th:if="${username == null}">person</span>
+              <span class="username" translate="no" th:if="${username != null}" th:text="${username}"></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <li sec:authorize="isAnonymous()">
+                <a class="dropdown-item" th:href="@{/login}">Đăng nhập</a>
+              </li>
+              <li sec:authorize="isAnonymous()">
+                <a class="dropdown-item" th:href="@{/register}">Đăng ký</a>
+              </li>
+              <li sec:authorize="isAuthenticated()">
+                <a class="dropdown-item" th:href="@{/profile}">Thông tin tài khoản</a>
+              </li>
+              <li sec:authorize="isAuthenticated()">
+                <a class="dropdown-item" ng-href="#!/address">Địa chỉ của tôi</a>
+              </li>
+              <li sec:authorize="isAuthenticated()">
+                <a class="dropdown-item" ng-href="#!/order-history">Lịch sử đơn hàng</a>
+              </li>
+              <li sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_STAFF')">
+                <a class="dropdown-item" th:href="@{/AdminHome}">Quản lý Admin</a>
+              </li>
+              <li sec:authorize="isAuthenticated()">
+                <a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#!/cart" class="nav-link px-2">
+              <span class="material-symbols-outlined" translate="no">shopping_cart</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>

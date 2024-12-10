@@ -1,0 +1,147 @@
+
+<body ng-controller="AdminPromotionsController" class="bg-light">
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="dashboard-card mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="m-0">
+                <span class="material-symbols-rounded me-2" translate="no" >local_offer</span>
+                Quản lý khuyến mãi
+            </h3>
+            <button class="btn btn-primary" ng-click="resetForm()" ng-if="isEdit">
+                <span class="material-symbols-rounded me-2" translate="no">add</span>
+                Thêm mới
+            </button>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="dashboard-card mb-4">
+        <h4 class="mb-4">{{isEdit ? 'Cập nhật' : 'Thêm'}} khuyến mãi</h4>
+        <form name="promotionForm" ng-submit="savePromotion()">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Mã khuyến mãi</label>
+                    <div class="input-group">
+                            <span class="input-group-text">
+                                <span class="material-symbols-rounded" translate="no">code</span>
+                            </span>
+                        <input type="text" class="form-control" ng-model="promotion.code"
+                               placeholder="Nhập mã khuyến mãi" required>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Giảm giá (%)</label>
+                    <div class="input-group">
+                            <span class="input-group-text">
+                                <span class="material-symbols-rounded" translate="no">percent</span>
+                            </span>
+                        <input type="number" class="form-control" ng-model="promotion.discountPercentage"
+                               placeholder="0-100" min="0" max="100">
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Giảm giá (VND)</label>
+                    <div class="input-group">
+                        <span class="input-group-text" translate="no">₫</span>
+                        <input type="number" class="form-control" ng-model="promotion.discountAmount"
+                               placeholder="Nhập số tiền" min="0">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Ngày bắt đầu</label>
+                    <div class="input-group">
+                            <span class="input-group-text">
+                                <span class="material-symbols-rounded" translate="no">event</span>
+                            </span>
+                        <input type="datetime-local" class="form-control"
+                               ng-model="promotion.startDate" required>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Ngày kết thúc</label>
+                    <div class="input-group">
+                            <span class="input-group-text">
+                                <span class="material-symbols-rounded" translate="no">event</span>
+                            </span>
+                        <input type="datetime-local" class="form-control"
+                               ng-model="promotion.endDate" required>
+                    </div>
+                </div>
+            </div>
+            <div class="text-end">
+                <button type="button" class="btn btn-secondary me-2" ng-click="resetForm()">
+                    <span class="material-symbols-rounded me-2" translate="no">refresh</span>Làm mới
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <span class="material-symbols-rounded me-2" translate="no">{{isEdit ? 'edit' : 'save'}}</span>
+                    {{isEdit ? 'Cập nhật' : 'Lưu'}}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table Card -->
+    <div class="dashboard-card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Mã khuyến mãi</th>
+                    <th>Giảm giá (%)</th>
+                    <th>Giảm giá (VND)</th>
+                    <th>Ngày bắt đầu</th>
+                    <th>Ngày kết thúc</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="promotion in promotions">
+                    <td><strong>#{{promotion.id}}</strong></td>
+                    <td>
+                        <span class="badge bg-primary">{{promotion.code}}</span>
+                    </td>
+                    <td>
+                                <span ng-if="promotion.discountPercentage">
+                                    {{promotion.discountPercentage}}%
+                                </span>
+                        <span ng-if="!promotion.discountPercentage">-</span>
+                    </td>
+                    <td>
+                                <span ng-if="promotion.discountAmount">
+                                    {{promotion.discountAmount | currency:"₫":0}}
+                                </span>
+                        <span ng-if="!promotion.discountAmount">-</span>
+                    </td>
+                    <td>{{promotion.startDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                    <td>{{promotion.endDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                    <td>
+                                <span class="badge"
+                                      ng-class="{
+                                          'bg-success': isActive(promotion),
+                                          'bg-danger': !isActive(promotion)
+                                      }">
+                                    {{isActive(promotion) ? 'Đang hoạt động' : 'Hết hạn'}}
+                                </span>
+                    </td>
+                    <td class="text-end">
+                        <button class="btn btn-info btn-sm me-1" ng-click="editPromotion(promotion)"
+                                title="Chỉnh sửa">
+                            <span class="material-symbols-rounded" translate="no">edit</span>
+                        </button>
+                        <button class="btn btn-danger btn-sm" ng-click="deletePromotion(promotion.id)"
+                                title="Xóa">
+                            <span class="material-symbols-rounded" translate="no">delete</span>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

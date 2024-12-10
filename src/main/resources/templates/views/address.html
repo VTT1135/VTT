@@ -1,0 +1,313 @@
+<style>
+        :root {
+            --primary-color: #937245;
+            --accent-color: #937245;
+            --hover-color: #7c5f39;
+            --text-color: #937245;
+            --light-bg: #f8f9fa;
+            --transition: all 0.3s ease;
+        }
+
+        .address-container {
+            padding: 3rem 0;
+            background: var(--light-bg);
+            min-height: 70vh;
+        }
+
+        .page-title {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 60%;
+            height: 2px;
+            background: var(--accent-color);
+        }
+
+        .address-form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+
+        .address-form-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .form-control {
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(147, 114, 69, 0.25);
+        }
+
+        .btn-submit {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .btn-submit:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .address-list {
+            margin-top: 2rem;
+        }
+
+        .address-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+            transition: var(--transition);
+            position: relative;
+            border: 1px solid #eee;
+        }
+
+        .address-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .address-info {
+            margin-bottom: 1rem;
+        }
+
+        .recipient-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .phone-number, .address-text {
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+
+        .address-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .btn-edit {
+            background: #f8f9fa;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-edit:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-delete {
+            background: #fff;
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        .btn-delete:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        .default-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #28a745;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .set-default-btn {
+            background: transparent;
+            color: var(--primary-color);
+            border: 1px dashed var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .set-default-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .address-container {
+                padding: 2rem 0;
+            }
+
+            .address-card {
+                padding: 1rem;
+            }
+
+            .address-actions {
+                flex-wrap: wrap;
+            }
+
+            .btn-action {
+                width: 100%;
+            }
+        }
+    </style>
+
+<body ng-controller="AddressController">
+
+<div class="address-container">
+    <div class="container">
+        <h2 class="page-title">Quản lý địa chỉ</h2>
+
+        <!-- Form thêm/sửa địa chỉ -->
+        <div class="address-form-card">
+            <h3 class="mb-4">{{isEditing ? 'Chỉnh sửa địa chỉ' : 'Thêm địa chỉ mới'}}</h3>
+            <form name="addressForm" ng-submit="isEditing ? updateAddress() : addAddress()" novalidate>
+                <div class="row">
+                    <!-- Tên người nhận -->
+                    <div class="col-md-6 mb-3">
+                        <label for="recipientName" class="form-label">Tên người nhận</label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="recipientName"
+                                ng-model="currentAddress.recipientName"
+                                ng-required="true"
+                                ng-pattern="/^[A-Za-zÀ-ÿ\s]+$/"
+                                ng-minlength="2"
+                                ng-maxlength="50"
+                                name="recipientName"
+                        >
+                        <!-- Thông báo lỗi cho Tên người nhận -->
+                        <div class="text-danger" ng-show="addressForm.recipientName.$touched && addressForm.recipientName.$invalid">
+                            <small ng-show="addressForm.recipientName.$error.required">Vui lòng nhập tên người nhận.</small>
+                            <small ng-show="addressForm.recipientName.$error.minlength">Tên người nhận phải dài ít nhất 2 ký tự.</small>
+                            <small ng-show="addressForm.recipientName.$error.maxlength">Tên người nhận không quá 50 ký tự.</small>
+                            <small ng-show="addressForm.recipientName.$error.pattern">Tên người nhận không được chứa số hoặc ký tự đặc biệt.</small>
+                        </div>
+                    </div>
+
+                    <!-- Số điện thoại -->
+                    <div class="col-md-6 mb-3">
+                        <label for="phoneNumber" class="form-label">Số điện thoại</label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="phoneNumber"
+                                ng-model="currentAddress.phoneNumber"
+                                ng-required="true"
+                                ng-pattern="/^(\+84|0)\d{9,10}$/"
+                                name="phoneNumber"
+                        >
+                        <!-- Thông báo lỗi cho Số điện thoại -->
+                        <div class="text-danger" ng-show="addressForm.phoneNumber.$touched && addressForm.phoneNumber.$invalid">
+                            <small ng-show="addressForm.phoneNumber.$error.required">Vui lòng nhập số điện thoại.</small>
+                            <small ng-show="addressForm.phoneNumber.$error.pattern">Số điện thoại không hợp lệ. Ví dụ: +84901234567 hoặc 0901234567.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Địa chỉ chi tiết -->
+                <div class="mb-3">
+                    <label for="address" class="form-label">Địa chỉ chi tiết</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="address"
+                            ng-model="currentAddress.address"
+                            ng-required="true"
+                            name="address"
+                    >
+                    <!-- Thông báo lỗi cho Địa chỉ -->
+                    <div class="text-danger" ng-show="addressForm.address.$touched && addressForm.address.$invalid">
+                        <small ng-show="addressForm.address.$error.required">Vui lòng nhập địa chỉ.</small>
+                    </div>
+                </div>
+
+                <!-- Nút hành động -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn-submit" ng-disabled="addressForm.$invalid">
+                        {{isEditing ? 'Cập nhật địa chỉ' : 'Thêm địa chỉ'}}
+                    </button>
+                    <button type="button" class="btn-cancel" ng-if="isEditing" ng-click="cancelEdit()">
+                        Hủy
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- Danh sách địa chỉ -->
+        <div class="address-list">
+            <div class="address-card" ng-repeat="address in addresses">
+                <span class="default-badge" ng-if="address.isDefault">Mặc định</span>
+                <div class="address-info">
+                    <div class="recipient-name">{{address.recipientName}}</div>
+                    <div class="phone-number">{{address.phoneNumber}}</div>
+                    <div class="address-text">{{address.address}}</div>
+                </div>
+                <div class="address-actions">
+                    <button class="btn-action btn-edit" ng-click="editAddress(address)">
+                        <span class="material-symbols-outlined" translate="no">edit</span> Chỉnh sửa
+                    </button>
+                    <button class="btn-action btn-delete" ng-click="deleteAddress(address.id)">
+                        <span class="material-symbols-outlined" translate="no">delete</span> Xóa
+                    </button>
+                    <button class="set-default-btn" ng-if="!address.isDefault"
+                            ng-click="setDefault(address.id)">
+                        <span class="material-symbols-outlined" translate="no">star</span> Đặt làm mặc định
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
